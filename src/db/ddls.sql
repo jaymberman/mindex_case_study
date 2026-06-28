@@ -105,7 +105,8 @@ CREATE TABLE IF NOT EXISTS dim_store_info (
     loaded_at DATETIME
 );
 
-
+-- Allow customer_id to be null in case of unknown, not-logged-in employee
+-- But a sale without a product or location shouldn't be valid
 CREATE TABLE IF NOT EXISTS fact_sales (
     transaction_id TEXT NOT NULL PRIMARY KEY,
     transaction_date TEXT NOT NULL,

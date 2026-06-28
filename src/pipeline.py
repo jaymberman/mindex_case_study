@@ -6,9 +6,9 @@ import pandas as pd
 from .analytics import refresh_views
 from .cleanse import clean_gold, clean_silver
 from .db.init_db import init_db
+from .export import export_report
 from .load import load_raw
 from .profile import profile
-from .export import export_report
 
 
 def _write_profile_report(products_df, stores_df, transactions_df):
@@ -99,18 +99,21 @@ def pipeline():
     ############ LOAD GOLD TABLES ######################
     # Goal here is to present data that is actually reportable upon.
     # My biggest deciding factor into how to model gold is what analytics are actually needed,
-    # rather than attempt to recreate the business backend database on the data warehouse side.
-    # Especially since I don't have complete business logic knowledge or source system knowledge,
-    # it's best not to make blind assumptions.
+    # rather than attempt to recreate the business backend schema and objects on the data warehouse side.
 
     # One major productionalization improvement is to implement dbt-like tests for gold and even silver models
     clean_gold(conn)
     
     ############ ANALYTICS #############################
-    # Refresh materialized views for analytics
+    # Refresh "materialized views" for analytics.
 
+    # Normally these views would be a lot richer but for POC purposes I just make a couple metrics per table
+    # Also these might not need to exist as separate materialized views but rather columns in a heavily denormalized
+    # gold layer. Or they might not be persisted in the warehouse at all but rather only sent to another application
     refresh_views(conn)
 
     ############ EXPORT REPORT #########################
 
     export_report(conn)
+
+    conn.close()
