@@ -9,15 +9,15 @@ from src.db.init_db import init_db
 from src.load import load_raw
 
 
-class TestGoldLayer:
+class TestGold:
     def test_run_creates_rows(self):
         conn = sqlite3.connect(":memory:")
 
         init_db(conn)
 
-        products_df = pd.read_csv("tests/test_products.csv")
-        stores_df = pd.read_csv("tests/test_stores.csv", parse_dates=["opened_date"])
-        transactions_df = pd.read_csv("tests/test_transactions.csv")
+        products_df = pd.read_csv("tests/data/test_products.csv")
+        stores_df = pd.read_csv("tests/data/test_stores.csv", parse_dates=["opened_date"])
+        transactions_df = pd.read_csv("tests/data/test_transactions.csv")
 
         now = pd.Timestamp.now('UTC')
         products_df["loaded_at"] = now
@@ -55,9 +55,9 @@ class TestGoldLayer:
 
         init_db(conn)
 
-        products_df = pd.read_csv("tests/test_products.csv")
-        stores_df = pd.read_csv("tests/test_stores.csv", parse_dates=["opened_date"])
-        transactions_df = pd.read_csv("tests/test_transactions.csv")
+        products_df = pd.read_csv("tests/data/test_products.csv")
+        stores_df = pd.read_csv("tests/data/test_stores.csv", parse_dates=["opened_date"])
+        transactions_df = pd.read_csv("tests/data/test_transactions.csv")
 
 
         for i in range(3):
@@ -109,16 +109,14 @@ class TestGoldLayer:
 
         conn.close()
 
-
-class TestAnalyticsResults:
-    def test_top_customer(self):
+    def test_new_run_creates_more_rows(self):
         conn = sqlite3.connect(":memory:")
 
         init_db(conn)
 
-        products_df = pd.read_csv("tests/test_products.csv")
-        stores_df = pd.read_csv("tests/test_stores.csv", parse_dates=["opened_date"])
-        transactions_df = pd.read_csv("tests/test_transactions.csv")
+        products_df = pd.read_csv("tests/data/test_products.csv")
+        stores_df = pd.read_csv("tests/data/test_stores.csv", parse_dates=["opened_date"])
+        transactions_df = pd.read_csv("tests/data/test_transactions.csv")
 
         now = pd.Timestamp.now('UTC')
         products_df["loaded_at"] = now
@@ -134,9 +132,30 @@ class TestAnalyticsResults:
 
         clean_gold(conn)
 
-        refresh_views(conn)
-
-        cust_id = conn.execute(
-            f"SELECT customer_id FROM top_customers"
+        count = conn.execute(
+            f"SELECT COUNT(*) FROM dim_products"
         ).fetchone()[0]
-        assert cust_id == 'CUST0247'
+        assert count == 5
+
+        count = conn.execute(
+            f"SELECT COUNT(*) FROM dim_stores"
+        ).fetchone()[0]
+        assert count == 2
+
+        count = conn.execute(
+            f"SELECT COUNT(*) FROM fact_sales"
+        ).fetchone()[0]
+        assert count == 9
+
+        transactions_df = pd.read_csv("tests/data/test_transactions_2.csv")
+        transactions_df["loaded_at"] = now
+        load_raw(transactions_df, conn, "bronze_transactions", load_type="append")
+        clean_silver(conn)
+        clean_gold(conn)
+
+        count = conn.execute(
+            f"SELECT COUNT(*) FROM fact_sales"
+        ).fetchone()[0]
+        assert count == 13
+
+        conn.close()

@@ -5,7 +5,7 @@ from src.profile import profile
 
 class TestProfile:
     def test_profile_edge_cases(self):
-        df = pd.read_csv("tests/empty_df.csv")
+        df = pd.read_csv("tests/data/empty_df.csv")
         audit = profile(df, "name")
 
         assert audit["name"]["shape"]["rows"] == 0
@@ -13,7 +13,7 @@ class TestProfile:
 
 
     def test_profile_logic(self):
-        df = pd.read_csv("tests/test.csv", parse_dates=["e"])
+        df = pd.read_csv("tests/data/test_profile.csv", parse_dates=["e"])
         audit = profile(df, "name")
 
         assert audit["name"]["shape"]["rows"] == 10
