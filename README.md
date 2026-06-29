@@ -21,12 +21,26 @@
 
 ```mermaid
 flowchart TD
-    A[Raw CSVs] --> B[Bronze Layer]
-    A --> P[Data Profile]
-    B --> C[Silver Layer]
-    C --> D[Gold Layer]
-    D --> E[Analytics Views]
-    E --> F[JSON Reports]
+
+    A[Raw CSVs]
+
+    subgraph SQLITE[SQLite]
+        B[Bronze Layer]
+        C[Silver Layer]
+        D[Gold Layer]
+        E[Analytics Views]
+    end
+
+    subgraph OUTPUT[Output]
+        P[Data Profile]
+        F[JSON Reports]
+    end
+
+    A --> B
+    A --> P
+    B --> C
+    C --> D
+    D --> E
 ```
 
 # Schema Design, Productionalization, Other Improvements
