@@ -50,7 +50,6 @@ class TestGoldLayer:
 
         conn.close()
 
-
     def test_multiple_runs_dont_produce_dups_in_gold(self):
         conn = sqlite3.connect(":memory:")
 
@@ -112,7 +111,7 @@ class TestGoldLayer:
 
 
 class TestAnalyticsResults:
-    def test_init_db(self):
+    def test_top_customer(self):
         conn = sqlite3.connect(":memory:")
 
         init_db(conn)
