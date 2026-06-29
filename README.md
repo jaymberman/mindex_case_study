@@ -31,7 +31,7 @@ flowchart TD
         E[Analytics Views]
     end
 
-    subgraph OUTPUT[Output]
+    subgraph OUTPUT[output]
         P[Data Profile]
         F[JSON Reports]
     end
@@ -41,6 +41,7 @@ flowchart TD
     B --> C
     C --> D
     D --> E
+    E --> F
 ```
 
 # Schema Design, Productionalization, Other Improvements
