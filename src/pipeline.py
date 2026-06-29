@@ -94,6 +94,7 @@ def pipeline():
     
     # One productionalization improvement would be to separate silver models into their own
     # source files, in a silver dir. Same for gold.
+    # Another would be more thorough analysis and cleaning.
     clean_silver(conn)
 
     ############ LOAD GOLD TABLES ######################
@@ -110,6 +111,7 @@ def pipeline():
     # Normally these views would be a lot richer but for POC purposes I just make a couple metrics per table
     # Also these might not need to exist as separate materialized views but rather columns in a heavily denormalized
     # gold layer. Or they might not be persisted in the warehouse at all but rather only sent to another application
+    # One improvement I'd also make is just more thorough EDA and test writing, but time was prohibitive.
     refresh_views(conn)
 
     ############ EXPORT REPORT #########################

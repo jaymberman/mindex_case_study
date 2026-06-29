@@ -1,0 +1,6 @@
+product_id,product_name,category,unit_price,supplier_id
+P001,Product P001,Office Supplies,76.48,SUP005
+P002,Product P002,Office Supplies,140.26,SUP005
+P003,Product P003,Home & Garden,107.56,SUP003
+P004,Product P004,Electronics,54.13,SUP001
+P005,Product P005,Apparel,126.96,SUP002
